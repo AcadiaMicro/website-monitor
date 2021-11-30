@@ -76,7 +76,7 @@ const worker = async (runId, queue, runner, browser) => {
 
   if (failedPages.length > 0) {
     await notifications("missing_landing_pages", {
-      landingPages: succesPages.slice(0, 5),
+      landingPages: failedPages,
       run_id: runId,
     });
   } else {

@@ -57,8 +57,6 @@ export default async function handler(
         };
       });
 
-    queryObjects = queryObjects.slice(0, 5)
-
     worker(runId, queryObjects, "landingPageRunner", browser);
 
     res.status(200).json({ runId: runId });
