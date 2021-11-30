@@ -42,7 +42,7 @@ const run = async (_browser, params) => {
   } catch (err) {
     return {
       status: 408,
-      check_element_exists: formElementPresent,
+      check_element_exists: false,
       screenshot_url: '',
       run_timestamp: +(new Date()),
       page_time: 0,
