@@ -1,0 +1,38 @@
+{
+  "name": "monitor",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "create-env": "printenv > .env"
+  },
+  "dependencies": {
+    "@date-io/date-fns": "^2.11.0",
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@google-cloud/firestore": "^4.15.1",
+    "@google-cloud/storage": "^5.16.0",
+    "@mui/icons-material": "^5.1.1",
+    "@mui/material": "^5.1.0",
+    "@types/uuid": "^8.3.1",
+    "date-fns": "^2.26.0",
+    "dotenv": "^10.0.0",
+    "firebase-admin": "^10.0.0",
+    "next": "12.0.3",
+    "puppeteer": "^11.0.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "swr": "^1.0.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "16.11.7",
+    "@types/node-fetch": "^3.0.3",
+    "@types/react": "17.0.34",
+    "eslint": "7.32.0",
+    "eslint-config-next": "12.0.3",
+    "typescript": "4.4.4"
+  }
+}
