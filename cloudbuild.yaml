@@ -1,0 +1,56 @@
+steps:
+  #
+  # Building
+  #
+
+  - id: copy-envs
+    name: node:14
+    entrypoint: npm
+    args: ['run', 'create-env']
+    env:
+      - 'DATOCMS_API_TOKEN=${_DATOCMS_API_TOKEN}'
+      - 'DATOCMS_API_URL=${_DATOCMS_API_URL}'
+      - 'BASEURL=${_BASEURL}'
+
+  - id: build-builder
+    name: gcr.io/cloud-builders/docker
+    args:
+      [
+        'build',
+        '--rm=false',
+        '-t',
+        'gcr.io/ampion/site-monitor-deploy:$COMMIT_SHA',
+        '-f',
+        'Dockerfile',
+        '.',
+      ]
+    env:
+      - 'BUILD=$BUILD_ID'
+      - 'PROJECT=$PROJECT_ID'
+      - 'COMMIT_SHA=$COMMIT_SHA'
+      - 'REV=$REVISION_ID'
+      - 'BRANCH_NAME=$BRANCH_NAME'
+
+  #
+  # Push the container image to Container Registry
+  #
+  - id: image-to-container-registry
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/ampion/site-monitor-deploy:$COMMIT_SHA']
+
+  # Deploy container image to Cloud Run
+  - id: deploy
+    name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'site-monitor-$BRANCH_NAME-deploy'
+      - '--image'
+      - 'gcr.io/ampion/site-monitor-deploy:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--port'
+      - '3000'
+      - '--allow-unauthenticated'
