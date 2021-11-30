@@ -1,10 +1,12 @@
 const { Firestore } = require("@google-cloud/firestore");
 
+const FIRESTORE_DB = process.env.FIRESTORE_DB;
+
 module.exports = {
   getRun: async (uuid) => {
     const firestore = new Firestore();
     const document = await firestore
-      .doc(`website-monitor-runs/${uuid}`)
+      .doc(`${FIRESTORE_DB}/${uuid}`)
       .get();
 
     return document.data();
@@ -12,8 +14,8 @@ module.exports = {
   get: async () => {
     const firestore = new Firestore();
     const document = await firestore
-      .collection(`website-monitor-runs`)
-      .select("run_id", "status", "timestamp", "duration", "total_pages", "failed_pages")
+      .collection(FIRESTORE_DB)
+      .select("run_id", "status", "timestamp", "duration", "total_pages", "failed_pages", "avg_page_time")
       .get();
 
     return document.docs
@@ -28,12 +30,13 @@ module.exports = {
   },
   create: async (uuid, data) => {
     const firestore = new Firestore();
-    const document = firestore.doc(`website-monitor-runs/${uuid}`);
+    const document = firestore.doc(`${FIRESTORE_DB}/${uuid}`);
     await document.set(data);
   },
   update: async (uuid, data) => {
+    console.log(data)
     const firestore = new Firestore();
-    const document = firestore.doc(`website-monitor-runs/${uuid}`);
+    const document = firestore.doc(`${FIRESTORE_DB}/${uuid}`);
     await document.update(data);
   },
 };

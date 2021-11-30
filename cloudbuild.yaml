@@ -11,6 +11,9 @@ steps:
       - 'DATOCMS_API_TOKEN=${_DATOCMS_API_TOKEN}'
       - 'DATOCMS_API_URL=${_DATOCMS_API_URL}'
       - 'BASEURL=${_BASEURL}'
+      - 'FIRESTORE_DB=${_FIRESTORE_DB}'
+      - 'SLACK_NOTIFICATION_URL=${_SLACK_NOTIFICATION_URL}'
+      - 'MONITOR_URL=${_MONITOR_URL}'
 
   - id: build-builder
     name: gcr.io/cloud-builders/docker

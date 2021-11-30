@@ -1,6 +1,4 @@
 const fetch = require('node-fetch');
-const dotenv = require('dotenv');
-dotenv.config();
 
 const API_URL = process.env.DATOCMS_API_URL;
 const API_TOKEN = process.env.DATOCMS_API_TOKEN;

@@ -1,6 +1,6 @@
-
 const firestore = require("../connector/firestore");
 
+const notifications = require("../notifications");
 
 const BATCH_SIZE = 5;
 const ASSETS_PATH = "public/runs";
@@ -50,16 +50,40 @@ const worker = async (runId, queue, runner, browser) => {
 
   console.log((+new Date() - start) / 1000);
 
-  await firestore.update(runId, {
+  const succesPages = res.filter((page) => page.status == 200);
+
+  const successPagesAVGTime = succesPages.reduce((acc, page) => {
+    return (acc += page.page_time);
+  }, 0);
+
+  const failedPages = res.filter((page) => page.status >= 400);
+
+  const runData = {
     run_id: runId,
     timestamp: +new Date(),
     status: "COMPLETED",
     duration: (+new Date() - start) / 1000,
     total_pages: res.length,
-    success_pages: res.filter((page) => page.status == 200).length,
-    failed_pages: res.filter((page) => page.status >= 400).length,
+    success_pages: succesPages.length,
+    failed_pages: failedPages.length,
+    avg_page_time:
+      successPagesAVGTime > 0
+        ? Math.round((successPagesAVGTime / succesPages.length) * 100) / 100
+        : 0,
     res: res,
-  });
+  }
+  await firestore.update(runId, runData);
+
+  if (failedPages.length > 0) {
+    await notifications("missing_landing_pages", {
+      landingPages: succesPages.slice(0, 5),
+      run_id: runId,
+    });
+  } else {
+    await notifications("success_run", runData);
+  }
+
+  
 };
 
 module.exports = worker;

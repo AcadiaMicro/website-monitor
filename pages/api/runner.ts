@@ -17,12 +17,12 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   try {
+
     if (!browser) {
       console.log('START BROWSER')
-      browser = await puppeteer.launch({
+      let browserConfig:any = {
         timeout: 120000,
         defaultViewport: { width: 1920, height: 1080 },
-        executablePath: "/usr/bin/chromium-browser",
         headless: true,
         args: [
           "--disable-gpu",
@@ -31,11 +31,21 @@ export default async function handler(
           "--window-size=1920,1080",
           "--disable-dev-shm-usage",
         ],
-      });
+      };
+
+      if (process.env.NODE_ENV != 'development') {
+        browserConfig.executablePath = "/usr/bin/chromium-browser";
+      }
+
+      browser = await puppeteer.launch();
       console.log('BROWSER LAUNCHED')
     }
     const landingPages = await datoCMS.getAllLandingPages();
-    const runId = uuidv4();
+    let runId = uuidv4();
+
+    if (process.env.NODE_ENV == 'development') {
+      runId += '_dev'
+    }
 
     let queryObjects = landingPages
       .filter((item) => item._status == "published")
@@ -46,6 +56,8 @@ export default async function handler(
           ...item,
         };
       });
+
+    queryObjects = queryObjects.slice(0, 5)
 
     worker(runId, queryObjects, "landingPageRunner", browser);
 

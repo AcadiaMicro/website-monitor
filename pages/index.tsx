@@ -95,6 +95,7 @@ const Home = () => {
                     <TableCell>Duration (s)</TableCell>
                     <TableCell>Pages Checked</TableCell>
                     <TableCell>Failed Pages</TableCell>
+                    <TableCell>AVG Page Time (s)</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -112,6 +113,7 @@ const Home = () => {
                       <TableCell>{row.duration}</TableCell>
                       <TableCell>{row.total_pages}</TableCell>
                       <TableCell>{row.failed_pages}</TableCell>
+                      <TableCell>{row.avg_page_time}</TableCell>
                       <TableCell>
                         <Button
                           target="_blank"
