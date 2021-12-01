@@ -59,7 +59,7 @@ module.exports = (ctx) => {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": ":warning:  *Website Monitoring Alerts* \\n\\n *${ctx.landingPages.length} landing page(s) on the website not available:*"
+                    "text": ":warning: <!here> *Website Monitoring Alerts* \\n\\n *${ctx.landingPages.length} landing page(s) on the website not available:*"
                 }
             },
             {

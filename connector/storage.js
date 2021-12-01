@@ -1,9 +1,11 @@
 const { Storage } = require("@google-cloud/storage");
 const storage = new Storage();
 
+const BUCKET_NAME = process.env.BUCKET_NAME;
+
 module.exports = {
   writeFile: async (buffer, runId, name) => {
-    const myBucket = storage.bucket("website-monitor");
+    const myBucket = storage.bucket(BUCKET_NAME);
     const file = myBucket.file(`${runId}/${name}`);
 
     await file.save(buffer);

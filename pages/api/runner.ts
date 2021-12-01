@@ -19,7 +19,7 @@ export default async function handler(
   try {
 
     if (!browser) {
-      console.log('START BROWSER')
+      console.log('START BROWSER', process.env.NODE_ENV )
       let browserConfig:any = {
         timeout: 120000,
         defaultViewport: { width: 1920, height: 1080 },

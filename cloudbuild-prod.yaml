@@ -23,7 +23,7 @@ steps:
         'build',
         '--rm=false',
         '-t',
-        'gcr.io/ampion/site-monitor-deploy:$COMMIT_SHA',
+        'gcr.io/bizsys/site-monitor-deploy:$COMMIT_SHA',
         '-f',
         'Dockerfile',
         '.',
@@ -40,7 +40,7 @@ steps:
   #
   - id: image-to-container-registry
     name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/ampion/site-monitor-deploy:$COMMIT_SHA']
+    args: ['push', 'gcr.io/bizsys/site-monitor-deploy:$COMMIT_SHA']
 
   # Deploy container image to Cloud Run
   - id: deploy
@@ -50,7 +50,7 @@ steps:
       - 'deploy'
       - 'site-monitor-$BRANCH_NAME-deploy'
       - '--image'
-      - 'gcr.io/ampion/site-monitor-deploy:$COMMIT_SHA'
+      - 'gcr.io/bizsys/site-monitor-deploy:$COMMIT_SHA'
       - '--region'
       - 'us-central1'
       - '--platform'
