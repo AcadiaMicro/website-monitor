@@ -7,6 +7,7 @@ module.exports = {
     BASEURL: process.env.BASEURL,
     SLACK_NOTIFICATION_URL: process.env.SLACK_NOTIFICATION_URL,
     MONITOR_URL: process.env.MONITOR_URL,
-    FIRESTORE_DB: process.env.FIRESTORE_DB
+    FIRESTORE_DB: process.env.FIRESTORE_DB,
+    BUCKET_NAME: process.env.BUCKET_NAME
   },
 }
