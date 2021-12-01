@@ -13,7 +13,7 @@ steps:
       - 'BASEURL=${_BASEURL}'
       - 'FIRESTORE_DB=${_FIRESTORE_DB}'
       - 'SLACK_NOTIFICATION_URL=${_SLACK_NOTIFICATION_URL}'
-      - 'MONITOR_URL=${_MONITOR_URL}',
+      - 'MONITOR_URL=${_MONITOR_URL}'
       - 'BUCKET_NAME=${_BUCKET_NAME}'
 
   - id: build-builder
