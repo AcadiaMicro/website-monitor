@@ -55,6 +55,7 @@ const browserManager = async () => {
     // }
     console.log("BROWSER LAUNCHED START");
     let instance = await chromium.launch({
+        timeout: 120000,
         args: [
         "--disable-gpu",
         "--ipc=host",
