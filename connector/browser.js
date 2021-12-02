@@ -53,20 +53,16 @@ const browserManager = async () => {
     // if (process.env.NODE_ENV != "development") {
     //   browserConfig.executablePath = "/usr/bin/chromium-browser";
     // }
-
+    console.log("BROWSER LAUNCHED START");
     let instance = await chromium.launch({
         args: [
         "--disable-gpu",
         "--disable-dev-shm-usage",
         ],
     });
-
-    const context = await instance.newContext();
-
-
     console.log("BROWSER LAUNCHED");
-    return context;
-
+    return instance;
+    
 };
 
 module.exports = browserManager;
