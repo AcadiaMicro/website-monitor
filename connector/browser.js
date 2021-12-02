@@ -33,7 +33,7 @@
 
 // module.exports = browserManager;
 
-const { chromium } = require("playwright-chromium");
+const { firefox } = require("playwright-firefox");
 
 const browserManager = async () => {
   // let browserConfig = {
@@ -53,7 +53,7 @@ const browserManager = async () => {
   //   browserConfig.executablePath = "/usr/bin/chromium-browser";
   // }
   console.log("BROWSER LAUNCHED START");
-  let instance = await chromium.launch({
+  let instance = await firefox.launch({
     timeout: 120000,
     args: [
       "--disable-gpu",
@@ -65,9 +65,9 @@ const browserManager = async () => {
   });
 
   instance.on("disconnected", () => {
-    console.log("BROWSER KILLED");
-    if (instance.process() != null) instance.process().kill("SIGINT");
-    instance = null;
+    console.log("BROWSER KILLED", instance);
+    // if (instance.process() != null) instance.process().kill("SIGINT");
+    // instance = null;
   });
   console.log("BROWSER LAUNCHED");
   return instance;

@@ -74,6 +74,7 @@ const worker = async (runId, queue, runner) => {
   // } else {
   //   await notifications("success_run", runData);
   // }  
+  // await context.newPage();
   await context.close();
   await browser.close();
 };
