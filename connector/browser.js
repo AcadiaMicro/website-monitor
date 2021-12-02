@@ -33,44 +33,43 @@
 
 // module.exports = browserManager;
 
-const { firefox } = require("playwright-firefox");
+const { chromium } = require("playwright-chromium");
 
-const browserManager = async () => {
-  // let browserConfig = {
-  //   timeout: 120000,
-  //   defaultViewport: { width: 1920, height: 1080 },
-  //   headless: true,
-  //   args: [
-  //     "--disable-gpu",
-  //     "--no-sandbox",
-  //     "--disable-setuid-sandbox",
-  //     "--window-size=1920,1080",
-  //     "--disable-dev-shm-usage",
-  //   ],
-  // };
+const browserManager = (() => {
+  let instance = null;
 
-  // if (process.env.NODE_ENV != "development") {
-  //   browserConfig.executablePath = "/usr/bin/chromium-browser";
-  // }
-  console.log("BROWSER LAUNCHED START");
-  let instance = await firefox.launch({
-    timeout: 120000,
-    args: [
-      "--disable-gpu",
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--window-size=1920,1080",
-      "--disable-dev-shm-usage",
-    ],
-  });
 
-  instance.on("disconnected", () => {
-    console.log("BROWSER KILLED", instance);
-    // if (instance.process() != null) instance.process().kill("SIGINT");
-    // instance = null;
-  });
-  console.log("BROWSER LAUNCHED");
-  return instance;
-};
+
+  let create = async () => {
+    console.log("BROWSER LAUNCHED START");
+    let browser = await chromium.launch({
+      timeout: 120000,
+      args: [
+        "--disable-gpu",
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--window-size=1920,1080",
+        "--disable-dev-shm-usage",
+      ],
+    });
+
+    browser.on("disconnected", () => {
+      console.log("BROWSER KILLED", instance);
+      instance = null;
+    });
+
+    console.log("BROWSER LAUNCHED");
+
+    return browser;
+  };
+
+  return async () => {
+    console.log('2222', instance)
+    if (!instance) {
+      instance = await create();
+    }
+    return instance;
+  };
+})();
 
 module.exports = browserManager;

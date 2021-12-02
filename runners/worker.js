@@ -76,7 +76,7 @@ const worker = async (runId, queue, runner) => {
   // }  
   // await context.newPage();
   await context.close();
-  await browser.close();
+  // await browser.close();
 };
 
 module.exports = worker;
