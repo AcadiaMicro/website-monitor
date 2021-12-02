@@ -18,16 +18,7 @@ const worker = async (runId, queue, runner, browser) => {
     throw new Error("Runner is not valid");
   }
 
-  await firestore.create(runId, {
-    run_id: runId,
-    timestamp: +new Date(),
-    status: "RUNNING",
-    duration: 0,
-    total_pages: queue.length,
-    success_pages: 0,
-    failed_pages: 0,
-    res: [],
-  });
+
 
   const start = +new Date();
   console.log("Working with worker", queue.length);
@@ -42,7 +33,7 @@ const worker = async (runId, queue, runner, browser) => {
     console.log(start, end);
     let runResult = await Promise.all(
       queue.slice(start, end).map((item) => {
-        return runners[runner](browser, item);
+        return runners[runner](browser.browser, item);
       })
     );
     res = res.concat(runResult);
@@ -83,6 +74,7 @@ const worker = async (runId, queue, runner, browser) => {
     await notifications("success_run", runData);
   }
 
+  await browser.terminate();
   
 };
 

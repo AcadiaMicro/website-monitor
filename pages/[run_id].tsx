@@ -90,13 +90,13 @@ const Home = ({ results }: HomePageProps) => {
                   </TableHead>
                   <TableBody>
                     {results.res
-                      .filter((item: any) => item.status >= 300)
+                      .filter((item: any) => item.status >= 400)
                       .map((row: any) => (
                         <TableRow
                           key={row.slug}
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
-                            background: row.status >= 300 ? "#ff8941" : "",
+                            background: row.status >= 400 ? "#ff8941" : "",
                           }}
                         >
                           <TableCell>{row.slug}</TableCell>

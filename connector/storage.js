@@ -17,4 +17,14 @@ module.exports = {
       auth_url: `https://storage.cloud.google.com/${meta[0].bucket}/${meta[0].name}`,
     };
   },
+
+  delete: async (runId) => {
+    const myBucket = storage.bucket(BUCKET_NAME);
+    await myBucket.deleteFiles({
+      prefix: `${runId}/`,
+      force: true
+    });
+
+    
+  },
 };

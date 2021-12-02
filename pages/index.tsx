@@ -44,18 +44,35 @@ const Home = () => {
 
   console.log(data);
   const runTest = async () => {
+    
+    const res = await fetch("/api/runner");
+    const data = await res.json();
+
     setSnackbarActive(true);
-    setSnackbarState({
-      status: "success",
-      message: "New run in progress. It may take 2-3 minutes to finish.",
-    });
-    await fetch("/api/runner");
+    if (data.runId) {
+      setSnackbarState({
+        status: "success",
+        message: "New run in progress. It may take 2-3 minutes to finish.",
+      });
+    } else {
+      setSnackbarState({
+        status: "error",
+        message: data.error || 'PROCESSING ERROR',
+      });
+    }
     mutate();
   };
 
   const handleSnackBarClose = () => {
     setSnackbarActive(false);
   };
+
+  const removeRun = async (runId:string) => {
+    const res = await fetch(`/api/delete/${runId}`, {
+      method: 'DELETE',
+    })
+    mutate();
+  }
 
   const results = data?.data;
 
@@ -115,13 +132,20 @@ const Home = () => {
                       <TableCell>{row.failed_pages}</TableCell>
                       <TableCell>{row.avg_page_time}</TableCell>
                       <TableCell>
-                        <Button
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href={row.run_id}
-                        >
-                          View Details
-                        </Button>
+                        <Stack>
+                          <Button
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={row.run_id}
+                          >
+                            View Details 
+                          </Button>
+                          <Button
+                             onClick={() => removeRun(row.run_id as string)}
+                          >
+                            Delete Results
+                          </Button>
+                        </Stack>
                       </TableCell>
                     </TableRow>
                   ))}

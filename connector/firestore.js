@@ -39,4 +39,9 @@ module.exports = {
     const document = firestore.doc(`${FIRESTORE_DB}/${uuid}`);
     await document.update(data);
   },
+  remove: async (uuid) => {
+    const firestore = new Firestore();
+    const document = firestore.doc(`${FIRESTORE_DB}/${uuid}`);
+    await document.delete();
+  }
 };
