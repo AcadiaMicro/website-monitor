@@ -9,7 +9,7 @@ const runners = {
   landingPageRunner: require("./landingPageRunner"),
 };
 
-const worker = async (runId, queue, runner, browser) => {
+const worker = async (runId, queue, runner) => {
   console.log("PREPS");
   if (!queue || queue.length == 0) {
     throw new Error("QUEUE is not valid");
@@ -33,7 +33,7 @@ const worker = async (runId, queue, runner, browser) => {
     console.log(start, end);
     let runResult = await Promise.all(
       queue.slice(start, end).map((item) => {
-        return runners[runner](browser.browser, item);
+        return runners[runner](item);
       })
     );
     res = res.concat(runResult);
@@ -65,17 +65,14 @@ const worker = async (runId, queue, runner, browser) => {
   }
   await firestore.update(runId, runData);
 
-  if (failedPages.length > 0) {
-    await notifications("missing_landing_pages", {
-      landingPages: failedPages,
-      run_id: runId,
-    });
-  } else {
-    await notifications("success_run", runData);
-  }
-
-  await browser.terminate();
-  
+  // if (failedPages.length > 0) {
+  //   await notifications("missing_landing_pages", {
+  //     landingPages: failedPages,
+  //     run_id: runId,
+  //   });
+  // } else {
+  //   await notifications("success_run", runData);
+  // }  
 };
 
 module.exports = worker;
