@@ -58,3 +58,4 @@ steps:
       - '--port'
       - '3000'
       - '--allow-unauthenticated'
+      - '--init'
