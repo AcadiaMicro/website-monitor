@@ -2,7 +2,7 @@ const firestore = require("../connector/firestore");
 
 const notifications = require("../notifications");
 
-const BATCH_SIZE = 2;
+const BATCH_SIZE = 10;
 const ASSETS_PATH = "public/runs";
 
 const runners = {

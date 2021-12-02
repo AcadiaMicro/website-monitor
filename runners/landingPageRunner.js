@@ -17,15 +17,14 @@ const run = async (params) => {
     const pageTime = (+(new Date()) - start) / 1000;
     
     const screenshotBuffer = await page.screenshot({
-      encoding: 'binary'
+      encoding: 'binary',
+      fullPage: true 
     });
 
     const screenshotPath = await storage.writeFile(screenshotBuffer, params.run_id, `${params.slug}.png`);
 
     const formElementPresent = !!(await page.$("#standard-form-field-email"));
     
-    await page.close();
-
     await browser.close();
     return {
       status: response.status(),

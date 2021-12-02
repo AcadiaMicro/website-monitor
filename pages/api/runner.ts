@@ -50,6 +50,7 @@ export default async function handler(
    
 
     let queryObjects = landingPages
+    .slice(0,10)
       .filter((item) => item._status == "published")
       .map((item) => {
         return {
