@@ -34,7 +34,7 @@
 // module.exports = browserManager;
 
 
-const { webkit } = require('playwright-webkit');
+const { chromium } = require('playwright-chromium');
 
 const browserManager = async () => {
     // let browserConfig = {
@@ -54,7 +54,12 @@ const browserManager = async () => {
     //   browserConfig.executablePath = "/usr/bin/chromium-browser";
     // }
 
-    let instance = await webkit.launch();
+    let instance = await chromium.launch({
+        args: [
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        ],
+    });
 
     const context = await instance.newContext();
 
