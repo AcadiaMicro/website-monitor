@@ -57,6 +57,7 @@ const browserManager = async () => {
     let instance = await chromium.launch({
         args: [
         "--disable-gpu",
+        "--ipc=host",
         "--disable-dev-shm-usage",
         ],
     });
