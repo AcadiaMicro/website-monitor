@@ -10,41 +10,62 @@ type Data = {
   error?: any;
 };
 
-let browser:any = null;
+const browserManager = (() => {
+  let instance: any = null;
+
+  const create = async () => {
+    let browserConfig: any = {
+      timeout: 120000,
+      defaultViewport: { width: 1920, height: 1080 },
+      headless: true,
+      args: [
+        "--disable-gpu",
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--window-size=1920,1080",
+        "--disable-dev-shm-usage",
+      ],
+    };
+
+    if (process.env.NODE_ENV != "development") {
+      browserConfig.executablePath = "/usr/bin/chromium-browser";
+    }
+
+    instance = await puppeteer.launch();
+
+    instance.on('disconnected', () => {
+      console.log('BROWSER KILLED');
+      if (instance.process() != null) instance.process().kill('SIGINT');
+      instance = null;
+    });
+
+    console.log("BROWSER LAUNCHED");
+    return instance;
+  };
+
+  return {
+    getBrowser: async () => {
+      if (!instance) {
+        return create();
+      }
+      return instance;
+    }
+
+  }
+})();
+
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
   try {
-
-    if (!browser) {
-      console.log('START BROWSER', process.env.NODE_ENV )
-      let browserConfig:any = {
-        timeout: 120000,
-        defaultViewport: { width: 1920, height: 1080 },
-        headless: true,
-        args: [
-          "--disable-gpu",
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--window-size=1920,1080",
-          "--disable-dev-shm-usage",
-        ],
-      };
-
-      if (process.env.NODE_ENV != 'development') {
-        browserConfig.executablePath = "/usr/bin/chromium-browser";
-      }
-
-      browser = await puppeteer.launch();
-      console.log('BROWSER LAUNCHED')
-    }
+    const browser = await browserManager.getBrowser()
     const landingPages = await datoCMS.getAllLandingPages();
     let runId = uuidv4();
 
-    if (process.env.NODE_ENV == 'development') {
-      runId += '_dev'
+    if (process.env.NODE_ENV == "development") {
+      runId += "_dev";
     }
 
     let queryObjects = landingPages
