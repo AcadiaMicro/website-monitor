@@ -56,9 +56,11 @@ const browserManager = async () => {
 
     let instance = await webkit.launch();
 
+    const context = await instance.newContext();
+
 
     console.log("BROWSER LAUNCHED");
-    return instance;
+    return context;
 
 };
 

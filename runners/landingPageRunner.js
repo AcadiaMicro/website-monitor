@@ -1,15 +1,13 @@
 const puppeteer = require("puppeteer");
 const storage = require("../connector/storage");
-const browserManager = require("../connector/browser");
 
-const run = async (params) => {
-  console.log("Running", params.slug);
+const run = async (params, browser) => {
+  console.log("Running clean", params.slug);
   
 
-  const browser = await browserManager();
-
+  let page;
   try {
-    const page = await browser.newPage();
+    page = await browser.newPage();
     const start = +(new Date());
     console.log('NAV URL', params.url)
     const response = await page.goto(params.url);
@@ -25,7 +23,7 @@ const run = async (params) => {
 
     const formElementPresent = !!(await page.$("#standard-form-field-email"));
     
-    await browser.close();
+    if (page) { await page.close()} ;
     return {
       status: response.status(),
       check_element_exists: formElementPresent,
@@ -35,7 +33,7 @@ const run = async (params) => {
       ...params
     };
   } catch (err) {
-    await browser.close();
+    if (page) { await page.close()} ;
     return {
       status: 408,
       check_element_exists: false,
