@@ -2,12 +2,7 @@ const firestore = require("../connector/firestore");
 const browserManager = require("../connector/browser");
 const notifications = require("../notifications");
 
-const BATCH_SIZE = 10;
-const ASSETS_PATH = "public/runs";
-
-
-
-
+const BATCH_SIZE = 5;
 
 const runners = {
   landingPageRunner: require("./landingPageRunner"),

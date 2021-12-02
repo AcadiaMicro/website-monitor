@@ -15,8 +15,7 @@ const run = async (params, browser) => {
     const pageTime = (+(new Date()) - start) / 1000;
     
     const screenshotBuffer = await page.screenshot({
-      encoding: 'binary',
-      fullPage: true 
+      encoding: 'binary'
     });
 
     const screenshotPath = await storage.writeFile(screenshotBuffer, params.run_id, `${params.slug}.png`);
