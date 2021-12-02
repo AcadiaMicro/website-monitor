@@ -1,4 +1,3 @@
-const puppeteer = require("puppeteer");
 const storage = require("../connector/storage");
 
 const run = async (params, browser) => {
