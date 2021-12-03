@@ -88,6 +88,7 @@ async function allLandingPages(query) {
           slug
           updatedAt
           createdAt
+          vid
           _status
         },
         _allLandingPagesMeta {

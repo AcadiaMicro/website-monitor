@@ -1,8 +1,7 @@
 const firestore = require("../connector/firestore");
-const browserManager = require("../connector/browser");
 const notifications = require("../notifications");
 
-const BATCH_SIZE = 5;
+const BATCH_SIZE = 10;
 
 const runners = {
   landingPageRunner: require("./landingPageRunner"),
@@ -17,15 +16,9 @@ const worker = async (runId, queue, runner) => {
     throw new Error("Runner is not valid");
   }
 
-
-  const browser = await browserManager();
-
-  const context = await browser.newContext();
-
   const start = +new Date();
   console.log("Working with worker", queue.length);
 
-  // console.log(queryObjects)
 
   let res = [];
 
@@ -35,7 +28,7 @@ const worker = async (runId, queue, runner) => {
     console.log(start, end);
     let runResult = await Promise.all(
       queue.slice(start, end).map((item) => {
-        return runners[runner](item, context);
+        return runners[runner](item);
       })
     );
     res = res.concat(runResult);
@@ -67,17 +60,15 @@ const worker = async (runId, queue, runner) => {
   }
   await firestore.update(runId, runData);
 
-  if (failedPages.length > 0) {
-    await notifications("missing_landing_pages", {
-      landingPages: failedPages,
-      run_id: runId,
-    });
-  } else {
-    await notifications("success_run", runData);
-  }  
+  // if (failedPages.length > 0) {
+  //   await notifications("missing_landing_pages", {
+  //     landingPages: failedPages,
+  //     run_id: runId,
+  //   });
+  // } else {
+  //   await notifications("success_run", runData);
+  // }  
   
-  await context.close();
-  await browser.close();
 };
 
 module.exports = worker;
