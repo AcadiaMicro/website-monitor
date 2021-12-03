@@ -4,7 +4,7 @@ ENV PORT 3000
 
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/local/bin/dumb-init
 RUN chmod +x /usr/local/bin/dumb-init
- ENTRYPOINT ["dumb-init", "--"]
+
 
 # Create app directory
 RUN mkdir -p /usr/src/app
@@ -20,5 +20,5 @@ RUN npm run build
 EXPOSE 3000
 
 
-
+ENTRYPOINT ["dumb-init", "--"]
 CMD ["npm", "start" ]
