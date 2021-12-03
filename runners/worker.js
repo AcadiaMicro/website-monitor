@@ -60,14 +60,14 @@ const worker = async (runId, queue, runner) => {
   }
   await firestore.update(runId, runData);
 
-  // if (failedPages.length > 0) {
-  //   await notifications("missing_landing_pages", {
-  //     landingPages: failedPages,
-  //     run_id: runId,
-  //   });
-  // } else {
-  //   await notifications("success_run", runData);
-  // }  
+  if (failedPages.length > 0) {
+    await notifications("missing_landing_pages", {
+      landingPages: failedPages,
+      run_id: runId,
+    });
+  } else {
+    await notifications("success_run", runData);
+  }  
   
 };
 
