@@ -57,7 +57,7 @@ const browserManager = (() => {
 
     browser.on("disconnected", () => {
       console.log("BROWSER KILLED", instance);
-      instance = null;
+    //   instance = null;
     });
 
     console.log("BROWSER LAUNCHED");
