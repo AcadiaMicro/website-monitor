@@ -52,7 +52,7 @@ const browserManager = async () => {
 
     browser.on("disconnected", () => {
       console.log("BROWSER KILLED");
-      // process.exit();
+      process.exit();
     //   instance = null;
     });
 

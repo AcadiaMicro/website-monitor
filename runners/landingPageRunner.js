@@ -9,9 +9,7 @@ const run = async (params, browser) => {
     page = await browser.newPage();
     const start = +(new Date());
     console.log('NAV URL', params.url)
-    const response = await page.goto(params.url, {
-      waitUntil: 'domcontentloaded'
-    });
+    const response = await page.goto(params.url);
     console.log('NAV URL', params.url, response.status())
     const pageTime = (+(new Date()) - start) / 1000;
     
