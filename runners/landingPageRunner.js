@@ -31,6 +31,7 @@ const run = async (params, browser) => {
       ...params
     };
   } catch (err) {
+    console.log(err, browser)
     if (page) { await page.close()} ;
     return {
       status: 408,
