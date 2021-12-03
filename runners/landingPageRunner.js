@@ -7,9 +7,6 @@ const run = async (params) => {
 
     const start = +(new Date());
     console.log('NAV URL', params.url)
-    if (params.url == 'ampion-101') {
-      params.url = '221'
-    }
     const response = await fetch(params.url);
     const html = await response.text();
     console.log('NAV URL', params.url, response.status)

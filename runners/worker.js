@@ -1,7 +1,7 @@
 const firestore = require("../connector/firestore");
 const notifications = require("../notifications");
 
-const BATCH_SIZE = 10;
+const BATCH_SIZE = 5;
 
 const runners = {
   landingPageRunner: require("./landingPageRunner"),
