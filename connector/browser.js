@@ -46,6 +46,8 @@ const browserManager = (() => {
       timeout: 120000,
       args: [
         "--disable-gpu",
+        "--no-zygote",
+        "--single-process",
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--window-size=1920,1080",
