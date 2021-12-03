@@ -20,6 +20,8 @@ const worker = async (runId, queue, runner) => {
 
   const browser = await browserManager();
 
+  const context = await browser.newContext();
+
   const start = +new Date();
   console.log("Working with worker", queue.length);
 
@@ -33,7 +35,7 @@ const worker = async (runId, queue, runner) => {
     console.log(start, end);
     let runResult = await Promise.all(
       queue.slice(start, end).map((item) => {
-        return runners[runner](item, browser);
+        return runners[runner](item, context);
       })
     );
     res = res.concat(runResult);
@@ -75,7 +77,7 @@ const worker = async (runId, queue, runner) => {
   // }  
   // await context.newPage();
   // await context.close();
-  await browser.close();
+  await context.close();
 };
 
 module.exports = worker;
