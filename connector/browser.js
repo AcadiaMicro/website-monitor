@@ -35,19 +35,14 @@
 
 const { chromium } = require("playwright-chromium");
 
-const browserManager = (() => {
-  let instance = null;
-
-
-
-  let create = async () => {
+const browserManager = async () => {
+  
     console.log("BROWSER LAUNCHED START");
     let browser = await chromium.launch({
       timeout: 120000,
       args: [
         "--disable-gpu",
         "--no-zygote",
-        "--single-process",
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--window-size=1920,1080",
@@ -56,22 +51,13 @@ const browserManager = (() => {
     });
 
     browser.on("disconnected", () => {
-      console.log("BROWSER KILLED", instance);
+      console.log("BROWSER KILLED");
     //   instance = null;
     });
 
     console.log("BROWSER LAUNCHED");
 
     return browser;
-  };
-
-  return async () => {
-    console.log('2222', instance)
-    if (!instance) {
-      instance = await create();
-    }
-    return instance;
-  };
-})();
+};
 
 module.exports = browserManager;

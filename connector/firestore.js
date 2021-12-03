@@ -34,7 +34,6 @@ module.exports = {
     await document.set(data);
   },
   update: async (uuid, data) => {
-    console.log(data)
     const firestore = new Firestore();
     const document = firestore.doc(`${FIRESTORE_DB}/${uuid}`);
     await document.update(data);
