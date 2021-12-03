@@ -15,6 +15,8 @@ steps:
       - 'SLACK_NOTIFICATION_URL=${_SLACK_NOTIFICATION_URL}'
       - 'MONITOR_URL=${_MONITOR_URL}'
       - 'BUCKET_NAME=${_BUCKET_NAME}'
+      - 'BROWSERSTACK_USERNAME=${_BROWSERSTACK_USERNAME}'
+      - 'BROWSERSTACK_ACCESS_KEY=${_BROWSERSTACK_ACCESS_KEY}'
 
   - id: build-builder
     name: gcr.io/cloud-builders/docker

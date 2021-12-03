@@ -1,64 +1,29 @@
-// const puppeteer = require("puppeteer");
-
-// const browserManager = async () => {
-//     let browserConfig = {
-//       timeout: 120000,
-//       defaultViewport: { width: 1920, height: 1080 },
-//       headless: true,
-//       args: [
-//         "--disable-gpu",
-//         "--no-sandbox",
-//         "--disable-setuid-sandbox",
-//         "--window-size=1920,1080",
-//         "--disable-dev-shm-usage",
-//       ],
-//     };
-
-//     if (process.env.NODE_ENV != "development") {
-//       browserConfig.executablePath = "/usr/bin/chromium-browser";
-//     }
-
-//     let instance = await puppeteer.launch();
-
-//     instance.on("disconnected", () => {
-//       console.log("BROWSER KILLED");
-//       if (instance.process() != null) instance.process().kill("SIGINT");
-//       instance = null;
-//     });
-
-//     console.log("BROWSER LAUNCHED");
-//     return instance;
-
-// };
-
-// module.exports = browserManager;
-
 const { chromium } = require("playwright-chromium");
+const cp = require("child_process");
+const clientPlaywrightVersion = cp
+  .execSync("npx playwright --version")
+  .toString()
+  .trim()
+  .split(" ")[1];
 
 const browserManager = async () => {
-  
-    console.log("BROWSER LAUNCHED START");
-    let browser = await chromium.launch({
-      timeout: 120000,
-      args: [
-        "--disable-gpu",
-        "--no-zygote",
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--window-size=1920,1080",
-        "--disable-dev-shm-usage",
-      ],
-    });
+  const caps = {
+    browser: "chrome", // allowed browsers are `chrome`, `edge`, `playwright-chromium`, `playwright-firefox` and `playwright-webkit`
+    os: "osx",
+    os_version: "catalina",
+    name: "My first playwright test",
+    build: "playwright-build-1",
+    "browserstack.username":  process.env.BROWSERSTACK_USERNAME,
+    "browserstack.accessKey": process.env.BROWSERSTACK_ACCESS_KEY,
+    "client.playwrightVersion": clientPlaywrightVersion, // Playwright version being used on your local project needs to be passed in this capability for BrowserStack to be able to map request and responses correctly
+  };
+  const browser = await chromium.connect({
+    wsEndpoint: `wss://cdp.browserstack.com/playwright?caps=${encodeURIComponent(
+      JSON.stringify(caps)
+    )}`,
+  });
 
-    browser.on("disconnected", () => {
-      console.log("BROWSER KILLED");
-      process.exit();
-    //   instance = null;
-    });
-
-    console.log("BROWSER LAUNCHED");
-
-    return browser;
+  return browser;
 };
 
 module.exports = browserManager;

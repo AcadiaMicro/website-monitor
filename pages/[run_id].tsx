@@ -86,6 +86,7 @@ const Home = ({ results }: HomePageProps) => {
                         <TableCell>Verify Element</TableCell>
                         <TableCell>Meta Verified</TableCell>
                         <TableCell>Load time (s)</TableCell>
+                        <TableCell>Screenshoot</TableCell>
                         <TableCell>Action</TableCell>
                       </TableRow>
                     </TableHead>
@@ -128,6 +129,18 @@ const Home = ({ results }: HomePageProps) => {
                             <TableCell>{row.page_time || "N/A"}</TableCell>
 
                             <TableCell>
+                            <a
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={row.screenshot_url.auth_url}
+                            >
+                              <img
+                                height="60"
+                                src={row.screenshot_url.auth_url}
+                              />
+                            </a>
+                          </TableCell>
+                            <TableCell>
                               <a
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -169,6 +182,7 @@ const Home = ({ results }: HomePageProps) => {
                     <TableCell>Verify Element</TableCell>
                     <TableCell>Meta Verified</TableCell>
                     <TableCell>Load time (s)</TableCell>
+                    <TableCell>Screenshoot</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -201,6 +215,18 @@ const Home = ({ results }: HomePageProps) => {
                       </TableCell>
                       <TableCell>{row.page_time || "N/A"}</TableCell>
 
+                      <TableCell>
+                            <a
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={row.screenshot_url.auth_url}
+                            >
+                              <img
+                                height="60"
+                                src={row.screenshot_url.auth_url}
+                              />
+                            </a>
+                          </TableCell>
                       <TableCell>
                         <a
                           target="_blank"

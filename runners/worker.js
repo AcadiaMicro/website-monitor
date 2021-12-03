@@ -1,10 +1,12 @@
 const firestore = require("../connector/firestore");
+const browserManager = require("../connector/browser");
 const notifications = require("../notifications");
 
 const BATCH_SIZE = 5;
 
 const runners = {
   landingPageRunner: require("./landingPageRunner"),
+  landingPageRunnerHeadless: require("./landingPageRunnerHeadless"),
 };
 
 const worker = async (runId, queue, runner) => {
@@ -16,9 +18,13 @@ const worker = async (runId, queue, runner) => {
     throw new Error("Runner is not valid");
   }
 
+
+  const browser = await browserManager();
+
   const start = +new Date();
   console.log("Working with worker", queue.length);
 
+  // console.log(queryObjects)
 
   let res = [];
 
@@ -28,7 +34,7 @@ const worker = async (runId, queue, runner) => {
     console.log(start, end);
     let runResult = await Promise.all(
       queue.slice(start, end).map((item) => {
-        return runners[runner](item);
+        return runners[runner](item, browser);
       })
     );
     res = res.concat(runResult);
@@ -69,6 +75,7 @@ const worker = async (runId, queue, runner) => {
     await notifications("success_run", runData);
   }  
   
+  await browser.close();
 };
 
 module.exports = worker;

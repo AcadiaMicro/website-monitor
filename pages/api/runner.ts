@@ -59,7 +59,7 @@ export default async function handler(
         };
       });
 
-    worker(runId, queryObjects, "landingPageRunner");
+    worker(runId, queryObjects, "landingPageRunnerHeadless");
 
     res.status(200).json({ runId: runId });
   } catch (err: any) {
