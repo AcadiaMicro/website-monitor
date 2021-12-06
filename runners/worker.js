@@ -2,6 +2,9 @@ const firestore = require("../connector/firestore");
 const browserManager = require("../connector/browser");
 const notifications = require("../notifications");
 
+
+import locals from '../utils/locals';
+
 const BATCH_SIZE = 5;
 
 const runners = {
@@ -53,7 +56,7 @@ const worker = async (runId, queue, runner) => {
   const runData = {
     run_id: runId,
     timestamp: +new Date(),
-    status: "COMPLETED",
+    status: failedPages.length > 0 ? locals.FAILURE : locals.SUCCESS,
     duration: (+new Date() - start) / 1000,
     total_pages: res.length,
     success_pages: succesPages.length,

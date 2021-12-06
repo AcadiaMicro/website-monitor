@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
 
+import locals from '../../utils/locals';
+
 
 import firestore from "../../connector/firestore";
 
@@ -21,7 +23,7 @@ export default async function handler(
     
     const data = await firestore.get();
 
-    if (data[0] && data[0].status !== "COMPLETED") {
+    if (data[0] && data[0].status == locals.PROGRESS) {
       throw new Error(
         "Other run in progress. Please wait for it to be finished."
       );
@@ -35,7 +37,7 @@ export default async function handler(
     await firestore.create(runId, {
       run_id: runId,
       timestamp: +new Date(),
-      status: "RUNNING",
+      status: locals.PROGRESS,
       duration: 0,
       total_pages: 0,
       success_pages: 0,
@@ -50,6 +52,7 @@ export default async function handler(
    
 
     let queryObjects = landingPages
+      .slice(0, 4)
       .filter((item) => item._status == "published")
       .map((item) => {
         return {

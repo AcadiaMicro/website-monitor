@@ -8,7 +8,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-import { format } from 'date-fns'
+import { formatedDate } from '../components/utils';
+
 
 
 
@@ -125,7 +126,7 @@ const Home = () => {
                       <TableCell>{row.run_id}</TableCell>
                       <TableCell>{row.status}</TableCell>
                       <TableCell>
-                        {format(new Date(row.timestamp), "MM-dd-yy HH:mm OOOO")}
+                        {formatedDate(row.timestamp, true)}
                       </TableCell>
                       <TableCell>{row.duration}</TableCell>
                       <TableCell>{row.total_pages}</TableCell>
