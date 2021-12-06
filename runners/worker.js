@@ -2,8 +2,7 @@ const firestore = require("../connector/firestore");
 const browserManager = require("../connector/browser");
 const notifications = require("../notifications");
 
-
-import locals from '../utils/locals';
+const locals = require('../utils/locals');
 
 const BATCH_SIZE = 5;
 
@@ -27,7 +26,6 @@ const worker = async (runId, queue, runner) => {
   const start = +new Date();
   console.log("Working with worker", queue.length);
 
-  // console.log(queryObjects)
 
   let res = [];
 

@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
 
-import locals from '../../utils/locals';
-
-
 import firestore from "../../connector/firestore";
 
 import worker from "../../runners/worker";
 import datoCMS from "../../connector/datocms";
+
+import locals from '../../utils/locals';
+
 
 type Data = {
   runId?: string;
@@ -52,7 +52,6 @@ export default async function handler(
    
 
     let queryObjects = landingPages
-      .slice(0, 4)
       .filter((item) => item._status == "published")
       .map((item) => {
         return {
