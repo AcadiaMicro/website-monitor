@@ -1,34 +1,83 @@
 import type { NextPage } from "next";
 import { readFile, writeFile } from "fs/promises";
 
+import { useState, FC } from "react";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { visuallyHidden } from "@mui/utils";
 
 import firestore from "../connector/firestore";
 import { Typography, Grid, Divider, Box } from "@mui/material";
 
 import StyledBar from "../components/StyledBar";
 
-import { formatedDate } from '../components/utils';
+import { formatedDate } from "../components/utils";
 
 interface HomePageProps {
   results: any;
 }
 
 const RenderResultsTable = ({ results }: { results: any }) => {
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
+  const [orderBy, setOrderBy] = useState("slug");
+
+  const descendingComparator = (a: any, b: any) => {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  const sortedData = (a: any, b: any) => {
+    return order === "desc"
+      ? descendingComparator(a, b)
+      : -descendingComparator(a, b);
+  };
+
+  const createSortHandler = (sortKey: string) => {
+    const isAsc = orderBy === sortKey && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(sortKey);
+  };
+
+  const SortableCell = (props: { sortKey: string; children: FC|string }) => {
+    const { sortKey, children } = props;
+    return (
+      <TableCell>
+        <TableSortLabel
+          active={orderBy === sortKey}
+          direction={orderBy === sortKey ? order : "asc"}
+          onClick={(event) => createSortHandler(sortKey)}
+        >
+          {children}
+          {orderBy === sortKey ? (
+            <Box component="span" sx={visuallyHidden}>
+              {order === "desc" ? "sorted descending" : "sorted ascending"}
+            </Box>
+          ) : null}
+        </TableSortLabel>
+      </TableCell>
+    );
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Landing Page Slug</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Dato CMS Status</TableCell>
+            <SortableCell sortKey="slug">Landing Page Slug</SortableCell>
+            <SortableCell sortKey="name">Name</SortableCell>
+            <SortableCell sortKey="_status">Dato CMS Status</SortableCell>
             <TableCell>Page Create Date</TableCell>
             <TableCell>Page Update Date</TableCell>
             <TableCell>HTTP Status</TableCell>
@@ -39,7 +88,7 @@ const RenderResultsTable = ({ results }: { results: any }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {results.map((row: any) => (
+          {results.sort(sortedData).map((row: any) => (
             <TableRow
               key={row.slug}
               sx={{
@@ -50,12 +99,8 @@ const RenderResultsTable = ({ results }: { results: any }) => {
               <TableCell>{row.slug}</TableCell>
               <TableCell>{row.name}</TableCell>
               <TableCell>{row._status}</TableCell>
-              <TableCell>
-                {formatedDate(row.createdAt) }
-              </TableCell>
-              <TableCell>
-                {formatedDate(row.updatedAt) }
-              </TableCell>
+              <TableCell>{formatedDate(row.createdAt)}</TableCell>
+              <TableCell>{formatedDate(row.updatedAt)}</TableCell>
               <TableCell>
                 {row.status} / {row.status == 200 && "OK"}{" "}
                 {row.status == 404 && "Not Found"}
@@ -99,25 +144,38 @@ const Home = ({ results }: HomePageProps) => {
         </Grid>
 
         <Divider sx={{ my: 2 }} />
-        <Grid container spacing={2} >
+        <Grid container spacing={2}>
           <Grid item xs={4}>
-            <Typography><b>Run Status:</b> {results.status}</Typography>
+            <Typography>
+              <b>Run Status:</b> {results.status}
+            </Typography>
           </Grid>
           <Grid item xs={4}>
-            <Typography><b>Run Duration (s):</b> {results.duration}</Typography>
+            <Typography>
+              <b>Run Duration (s):</b> {results.duration}
+            </Typography>
           </Grid>
           <Grid item xs={4}>
-            <Typography><b>Completed (All times are EST):</b> {formatedDate(results.timestamp, true)}</Typography>
+            <Typography>
+              <b>Completed (All times are EST):</b>{" "}
+              {formatedDate(results.timestamp, true)}
+            </Typography>
           </Grid>
-        
+
           <Grid item xs={4}>
-            <Typography><b>Total Pages:</b> {results.total_pages}</Typography>
+            <Typography>
+              <b>Total Pages:</b> {results.total_pages}
+            </Typography>
           </Grid>
           <Grid item xs={4}>
-            <Typography><b>Resolved Pages:</b> {results.success_pages}</Typography>
+            <Typography>
+              <b>Resolved Pages:</b> {results.success_pages}
+            </Typography>
           </Grid>
           <Grid item xs={4}>
-            <Typography><b>Failed Pages: </b> {results.failed_pages}</Typography>
+            <Typography>
+              <b>Failed Pages: </b> {results.failed_pages}
+            </Typography>
           </Grid>
         </Grid>
         <Box sx={{ my: 8 }} />
