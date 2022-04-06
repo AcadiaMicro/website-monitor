@@ -83,7 +83,8 @@ const worker = async (runId, queue, runner) => {
     
     await firestore.update(runId, { 
       timestamp: +new Date(),
-      status: locals.FAILURE
+      status: locals.FAILURE,
+      error: err
     });
 
     throw err;

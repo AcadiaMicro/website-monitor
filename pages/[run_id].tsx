@@ -119,19 +119,19 @@ const RenderResultsTable = ({
               </TableCell>
               <TableCell>{row.page_time || "N/A"}</TableCell>
               {runner == "landingPageRunnerHeadless" && (
-              <TableCell>
-                {row.screenshot_url ? (
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={row.screenshot_url.auth_url}
-                  >
-                    <img height="60" src={row.screenshot_url.auth_url} />
-                  </a>
-                ) : (
-                  "N/A"
-                )}
-              </TableCell>
+                <TableCell>
+                  {row.screenshot_url ? (
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={row.screenshot_url.auth_url}
+                    >
+                      <img height="60" src={row.screenshot_url.auth_url} />
+                    </a>
+                  ) : (
+                    "N/A"
+                  )}
+                </TableCell>
               )}
               <TableCell>
                 <a target="_blank" rel="noopener noreferrer" href={row.url}>
@@ -191,6 +191,13 @@ const Home = ({ results }: HomePageProps) => {
               <b>Failed Pages: </b> {results.failed_pages}
             </Typography>
           </Grid>
+          {results.error && (
+            <Grid item xs={12}>
+              <Typography>
+                <b>Page Error: </b> {results.error}
+              </Typography>
+            </Grid>
+          )}
         </Grid>
         <Box sx={{ my: 8 }} />
         {results.failed_pages > 0 && (

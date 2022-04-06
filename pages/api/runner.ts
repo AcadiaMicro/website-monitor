@@ -68,9 +68,7 @@ export default async function handler(
     res.status(200).json({ runId: runId });
   } catch (err: any) {
     console.log(err);
-    Honeybadger.notify({
-      message: err,
-    });
+    Honeybadger.notify(err);
     
     res.status(422).json({ error: err.message ? err.message : err });
   }
