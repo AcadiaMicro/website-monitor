@@ -23,7 +23,10 @@ const worker = async (runId, queue, runner) => {
     }
 
 
-    const browser = await browserManager();
+    let browser;
+    if (runner == 'landingPageRunnerHeadless') {
+      browser = await browserManager();
+    }
 
     const start = +new Date();
     console.log("Working with worker", queue.length);
@@ -78,7 +81,10 @@ const worker = async (runId, queue, runner) => {
       await notifications("success_run", runData);
     }  
     
-    await browser.close();
+    if (browser) {
+      await browser.close();
+    }
+
   } catch (err) {
     
     await firestore.update(runId, { 
