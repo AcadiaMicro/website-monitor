@@ -12,7 +12,7 @@ const runners = {
 };
 
 const worker = async (runId, queue, runner) => {
-  console.log("PREPS");
+  console.log("PREPS", runner);
   try {
 
     if (!queue || queue.length == 0) {
@@ -85,7 +85,7 @@ const worker = async (runId, queue, runner) => {
       timestamp: +new Date(),
       status: locals.FAILURE
     });
-    
+
     throw err;
   }
 };
