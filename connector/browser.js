@@ -7,6 +7,7 @@ const clientPlaywrightVersion = cp
   .split(" ")[1];
 
 const browserManager = async () => {
+  console.log('Browser starup')
   const caps = {
     browser: "chrome", // allowed browsers are `chrome`, `edge`, `playwright-chromium`, `playwright-firefox` and `playwright-webkit`
     os: "osx",

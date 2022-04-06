@@ -4,7 +4,7 @@ const notifications = require("../notifications");
 
 const locals = require('../utils/locals');
 
-const BATCH_SIZE = 5;
+const BATCH_SIZE = 10;
 
 const runners = {
   landingPageRunner: require("./landingPageRunner"),
