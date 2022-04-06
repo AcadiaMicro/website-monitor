@@ -24,7 +24,13 @@ interface HomePageProps {
   results: any;
 }
 
-const RenderResultsTable = ({ results }: { results: any }) => {
+const RenderResultsTable = ({
+  results,
+  runner = "landingPageRunnerHeadless",
+}: {
+  results: any;
+  runner: string;
+}) => {
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [orderBy, setOrderBy] = useState("slug");
 
@@ -36,7 +42,7 @@ const RenderResultsTable = ({ results }: { results: any }) => {
       return 1;
     }
     return 0;
-  }
+  };
 
   const sortedData = (a: any, b: any) => {
     return order === "desc"
@@ -50,7 +56,7 @@ const RenderResultsTable = ({ results }: { results: any }) => {
     setOrderBy(sortKey);
   };
 
-  const SortableCell = (props: { sortKey: string; children: FC|string }) => {
+  const SortableCell = (props: { sortKey: string; children: FC | string }) => {
     const { sortKey, children } = props;
     return (
       <TableCell>
@@ -83,7 +89,10 @@ const RenderResultsTable = ({ results }: { results: any }) => {
             <TableCell>HTTP Status</TableCell>
             <TableCell>Verify Element</TableCell>
             <TableCell>Load time (s)</TableCell>
-            <TableCell>Screenshoot</TableCell>
+            {runner == "landingPageRunnerHeadless" && (
+              <TableCell>Screenshoot</TableCell>
+            )}
+
             <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
@@ -109,16 +118,21 @@ const RenderResultsTable = ({ results }: { results: any }) => {
                 {row.check_element_exists ? "Present" : "Missing"}
               </TableCell>
               <TableCell>{row.page_time || "N/A"}</TableCell>
-
-              <TableCell>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={row.screenshot_url.auth_url}
-                >
-                  <img height="60" src={row.screenshot_url.auth_url} />
-                </a>
-              </TableCell>
+              {runner == "landingPageRunnerHeadless" && (
+                <TableCell>
+                  {row.screenshot_url ? (
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={row.screenshot_url.auth_url}
+                    >
+                      <img height="60" src={row.screenshot_url.auth_url} />
+                    </a>
+                  ) : (
+                    "N/A"
+                  )}
+                </TableCell>
+              )}
               <TableCell>
                 <a target="_blank" rel="noopener noreferrer" href={row.url}>
                   View Page
@@ -177,6 +191,13 @@ const Home = ({ results }: HomePageProps) => {
               <b>Failed Pages: </b> {results.failed_pages}
             </Typography>
           </Grid>
+          {results.error && (
+            <Grid item xs={12}>
+              <Typography>
+                <b>Page Error: </b> {results.error}
+              </Typography>
+            </Grid>
+          )}
         </Grid>
         <Box sx={{ my: 8 }} />
         {results.failed_pages > 0 && (
@@ -190,6 +211,7 @@ const Home = ({ results }: HomePageProps) => {
             <Grid container>
               <Grid item xs={12}>
                 <RenderResultsTable
+                  runner={results.runner}
                   results={results.res.filter(
                     (item: any) => item.status >= 400
                   )}
@@ -209,7 +231,7 @@ const Home = ({ results }: HomePageProps) => {
         <Divider sx={{ my: 2 }} />
         <Grid container>
           <Grid item xs={12}>
-            <RenderResultsTable results={results.res} />
+            <RenderResultsTable runner={results.runner} results={results.res} />
           </Grid>
         </Grid>
       </Box>

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidv4 } from "uuid";
+import Honeybadger from '@honeybadger-io/js';
 
 import firestore from "../../connector/firestore";
 
@@ -43,6 +44,7 @@ export default async function handler(
       success_pages: 0,
       failed_pages: 0,
       res: [],
+      runner: process.env.DEFAULT_RUNNER
     });
 
 
@@ -61,11 +63,13 @@ export default async function handler(
         };
       });
 
-    worker(runId, queryObjects, "landingPageRunnerHeadless");
+    worker(runId, queryObjects, process.env.DEFAULT_RUNNER);
 
     res.status(200).json({ runId: runId });
   } catch (err: any) {
     console.log(err);
+    Honeybadger.notify(err);
+    
     res.status(422).json({ error: err.message ? err.message : err });
   }
 }
