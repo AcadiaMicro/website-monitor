@@ -64,3 +64,4 @@ steps:
       - '--port'
       - '3000'
       - '--allow-unauthenticated'
+timeout: '1800s' # extend timeout for build to 30 minutes
