@@ -8,8 +8,7 @@ export const validateToken = async (token: string) => {
       audience: process.env.GOOGLE_CLOUD_ID,
     });
     const payload = ticket.getPayload();
-    const userid = payload?.["sub"];
-
+    
     return (
       payload &&
       payload.iss.includes("accounts.google.com") &&

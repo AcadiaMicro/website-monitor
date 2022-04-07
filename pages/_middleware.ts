@@ -8,6 +8,8 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
 
   if (
     url.pathname.includes("/api") &&
+    url.pathname !== '/api/auth' &&
+    url.pathname !== '/api/logout' &&
     !requestKey &&
     requestKey !== process.env.API_ACCESS_KEY
   ) {

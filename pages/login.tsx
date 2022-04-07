@@ -32,8 +32,6 @@ function Copyright(props: any) {
 }
 
 const Login = () => {
- console.log(process.env.GOOGLE_CLIENT_ID)
-
   return (
     <Container component="main" maxWidth="xs">
       <Script src="https://accounts.google.com/gsi/client" async defer />
