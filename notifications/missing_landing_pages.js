@@ -49,7 +49,7 @@ module.exports = (ctx) => {
   };
 
   let pagesSections = "";
-  ctx.landingPages.forEach((landingPage) => {
+  ctx.failedPagesDetailes.forEach((landingPage) => {
     pagesSections += pageTemplate(landingPage);
   });
 
@@ -59,7 +59,7 @@ module.exports = (ctx) => {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": ":warning: <!here> *Website Monitoring Alerts* \\n\\n *${ctx.landingPages.length} landing page(s) on the website not available:*"
+                    "text": ":warning: <!channel> *Website Monitoring Alerts* \\n\\n *${ctx.failed_pages} landing page(s) on the website not available:*"
                 }
             },
             {
@@ -67,18 +67,39 @@ module.exports = (ctx) => {
             },
             ${pagesSections}
             {
-                "type": "actions",
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": ":success: *${ctx.success_pages} landing pages responded successfully.*"
+                }
+            },
+            {
+                "type": "divider"
+            },      
+            {
+                "type": "context",
                 "elements": [
                     {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Run Scan Again",
-                            "emoji": true
-                        },
-                        "value": "scan_again",
-                        "url": "${MONITOR_URL}/api/runner"
+                        "type": "mrkdwn",
+                        "text": "*Scanned Page* - ${ctx.total_pages}"
                     },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Scan Duration* - ${ctx.duration}s"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Scan Time* - ${date.format(new Date(ctx.timestamp), "MM-dd-yy HH:mm OOOO")}"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*AVG Page Time* - ${ctx.avg_page_time}s"
+                    }
+                ]
+            }, 
+            {
+                "type": "actions",
+                "elements": [
                     {
                         "type": "button",
                         "text": {
@@ -86,7 +107,7 @@ module.exports = (ctx) => {
                             "text": "View Scan Details",
                             "emoji": true
                         },
-                        "value": "scan_again",
+                        "value": "scan_details",
                         "url": "${MONITOR_URL}/${ctx.run_id}"
                     }
                 ]

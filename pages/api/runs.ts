@@ -12,7 +12,8 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   try {
-    const data = await firestore.get();
+    const limit = Number(req.query? req.query.limit : 10);
+    const data = await firestore.get(limit);
     res.status(200).json({ data: data });
   } catch (err) {
     console.log(err);

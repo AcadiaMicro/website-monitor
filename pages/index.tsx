@@ -1,4 +1,5 @@
-import { useState } from "react";
+import type { GetServerSidePropsContext } from "next";
+import { useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,10 +9,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-import { formatedDate } from '../components/utils';
-
-
-
+import { getTokenCookie } from "../utils/auth-cookies";
+import { validateToken } from "../utils/session-utils";
+import { formatedDate } from "../components/utils";
 
 import useSWR from "swr";
 
@@ -24,11 +24,10 @@ import {
   Alert,
   LinearProgress,
   IconButton,
-  Stack
+  Stack,
 } from "@mui/material";
 
-import StyledBar from '../components/StyledBar'
-
+import StyledBar from "../components/StyledBar";
 
 interface SnabackStateProps {
   status?: "success" | "error";
@@ -40,13 +39,22 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const Home = () => {
   const [snackbarActive, setSnackbarActive] = useState<boolean>(false);
   const [snackbarState, setSnackbarState] = useState<SnabackStateProps>({});
+  const [limit, setLimit] = useState(10);
 
-  const { data, mutate } = useSWR("/api/runs", fetcher);
+
+  useEffect(() => {
+    const limitQueryParam = new URLSearchParams(window.location.search).get("limit");
+
+    if (limitQueryParam) {
+      setLimit(Number(limitQueryParam))
+    }
+  }, [])
+
+  const { data, mutate } = useSWR(`/api/runs?limit=${limit}&key=${process.env.API_ACCESS_KEY}`, fetcher);
 
   console.log(data);
   const runTest = async () => {
-    
-    const res = await fetch("/api/runner");
+    const res = await fetch(`/api/runner?key=${process.env.API_ACCESS_KEY}`);
     const data = await res.json();
 
     setSnackbarActive(true);
@@ -58,7 +66,7 @@ const Home = () => {
     } else {
       setSnackbarState({
         status: "error",
-        message: data.error || 'PROCESSING ERROR',
+        message: data.error || "PROCESSING ERROR",
       });
     }
     mutate();
@@ -68,12 +76,12 @@ const Home = () => {
     setSnackbarActive(false);
   };
 
-  const removeRun = async (runId:string) => {
-    const res = await fetch(`/api/delete/${runId}`, {
-      method: 'DELETE',
-    })
+  const removeRun = async (runId: string) => {
+    const res = await fetch(`/api/delete/${runId}?key=${process.env.API_ACCESS_KEY}`, {
+      method: "DELETE",
+    });
     mutate();
-  }
+  };
 
   const results = data?.data;
 
@@ -83,7 +91,7 @@ const Home = () => {
 
   return (
     <>
-      <StyledBar/>
+      <StyledBar />
       <Box sx={{ m: 4 }}>
         <Grid container sx={{ mb: 4 }}>
           <Grid item xs>
@@ -125,9 +133,7 @@ const Home = () => {
                     >
                       <TableCell>{row.run_id}</TableCell>
                       <TableCell>{row.status}</TableCell>
-                      <TableCell>
-                        {formatedDate(row.timestamp, true)}
-                      </TableCell>
+                      <TableCell>{formatedDate(row.timestamp, true)}</TableCell>
                       <TableCell>{row.duration}</TableCell>
                       <TableCell>{row.total_pages}</TableCell>
                       <TableCell>{row.failed_pages}</TableCell>
@@ -139,10 +145,10 @@ const Home = () => {
                             rel="noopener noreferrer"
                             href={row.run_id}
                           >
-                            View Details 
+                            View Details
                           </Button>
                           <Button
-                             onClick={() => removeRun(row.run_id as string)}
+                            onClick={() => removeRun(row.run_id as string)}
                           >
                             Delete Results
                           </Button>
@@ -171,6 +177,21 @@ const Home = () => {
       </Box>
     </>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const token = getTokenCookie(context.req);
+  if (!(await validateToken(token))) {
+    return {
+      redirect: { destination: "/login", permanent: false },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default Home;
