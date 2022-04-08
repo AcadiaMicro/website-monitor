@@ -4,7 +4,7 @@ const notifications = require("../notifications");
 
 const locals = require('../utils/locals');
 
-const BATCH_SIZE = 10;
+const BATCH_SIZE = 5;
 
 const runners = {
   landingPageRunner: require("./landingPageRunner"),
@@ -31,14 +31,7 @@ const worker = async (runId, queue, runner) => {
     const start = +new Date();
     console.log("Working with worker", queue.length);
 
-
     let res = [];
-
-    
-    // for ( let item of queue) {
-    //   res.push(await runners[runner](item, browser))
-      
-    // }
 
     for (let i = 1, len = Math.ceil(queue.length / BATCH_SIZE); i <= len; i++) {
       const start = (i - 1) * BATCH_SIZE;
@@ -78,14 +71,14 @@ const worker = async (runId, queue, runner) => {
     }
     await firestore.update(runId, runData);
 
-    // if (failedPages.length > 0) {
-    //   await notifications("missing_landing_pages", {
-    //     ...runData,
-    //     failedPagesDetailes: failedPages
-    //   });
-    // } else {
-    //   await notifications("success_run", runData);
-    // }  
+    if (failedPages.length > 0) {
+      await notifications("missing_landing_pages", {
+        ...runData,
+        failedPagesDetailes: failedPages
+      });
+    } else {
+      await notifications("success_run", runData);
+    }  
     
     if (browser) {
       await browser.close();
