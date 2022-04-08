@@ -1,23 +1,17 @@
-const cheerio = require('cheerio');
-
 const run = async (params) => {
-  console.log("Running clean", params.slug);
+  const start = +(new Date());
   
   try {
 
     const start = +(new Date());
-    console.log('NAV URL', params.url)
     const response = await fetch(params.url);
     const html = await response.text();
-    console.log('NAV URL', params.url, response.status)
     const pageTime = (+(new Date()) - start) / 1000;
-
-    const $ = cheerio.load(html);
     
 
     return {
       status: response.status,
-      check_element_exists: $("#standard-form-field-email").length,
+      check_element_exists: html.includes('standard-form-field-email'),
       meta_info_verified: html.indexOf(params.vid),
       screenshot_url: '',
       run_timestamp: +(new Date()),

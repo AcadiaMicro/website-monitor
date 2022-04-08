@@ -11,22 +11,17 @@ module.exports = {
 
     return document.data();
   },
-  get: async () => {
+  get: async (limit = 10) => {
     const firestore = new Firestore();
     const document = await firestore
       .collection(FIRESTORE_DB)
       .select("run_id", "status", "timestamp", "duration", "total_pages", "failed_pages", "avg_page_time")
+      .orderBy('timestamp', 'desc')
+      .limit(limit)
       .get();
 
     return document.docs
-      .map((doc) => doc.data())
-      .sort((a, b) => {
-        return a.timestamp > b.timestamp
-          ? -1
-          : a.timestamp < b.timestamp
-          ? 1
-          : 0;
-      });
+      .map((doc) => doc.data());
   },
   create: async (uuid, data) => {
     const firestore = new Firestore();

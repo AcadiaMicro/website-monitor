@@ -4,7 +4,7 @@ const notifications = require("../notifications");
 
 const locals = require('../utils/locals');
 
-const BATCH_SIZE = 10;
+const BATCH_SIZE = 5;
 
 const runners = {
   landingPageRunner: require("./landingPageRunner"),
@@ -12,7 +12,7 @@ const runners = {
 };
 
 const worker = async (runId, queue, runner) => {
-  console.log("PREPS", runner);
+  console.log("PREPS", runner, process.memoryUsage());
   try {
 
     if (!queue || queue.length == 0) {
@@ -30,7 +30,6 @@ const worker = async (runId, queue, runner) => {
 
     const start = +new Date();
     console.log("Working with worker", queue.length);
-
 
     let res = [];
 
@@ -74,8 +73,8 @@ const worker = async (runId, queue, runner) => {
 
     if (failedPages.length > 0) {
       await notifications("missing_landing_pages", {
-        landingPages: failedPages,
-        run_id: runId,
+        ...runData,
+        failedPagesDetailes: failedPages
       });
     } else {
       await notifications("success_run", runData);

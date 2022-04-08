@@ -21,6 +21,9 @@ steps:
       - 'HONEYBADGER_ASSETS_URL=${_HONEYBADGER_ASSETS_URL}'
       - 'HONEYBADGER_ENV=${_HONEYBADGER_ENV}'
       - 'DEFAULT_RUNNER=${_DEFAULT_RUNNER}'
+      - 'GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID}'
+      - 'GOOGLE_AUTH_REDIRECT_URL=${_GOOGLE_AUTH_REDIRECT_URL}'
+      - 'API_ACCESS_KEY=${_API_ACCESS_KEY}'
 
   - id: build-builder
     name: gcr.io/cloud-builders/docker

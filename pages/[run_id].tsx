@@ -20,6 +20,9 @@ import StyledBar from "../components/StyledBar";
 
 import { formatedDate } from "../components/utils";
 
+import { getTokenCookie } from "../utils/auth-cookies";
+import { validateToken } from "../utils/session-utils";
+
 interface HomePageProps {
   results: any;
 }
@@ -240,6 +243,13 @@ const Home = ({ results }: HomePageProps) => {
 };
 
 export async function getServerSideProps(context: any) {
+  const token = getTokenCookie(context.req);
+  if (!(await validateToken(token))) {
+    return {
+      redirect: { destination: "/login", permanent: false },
+    };
+  }
+
   const res = await firestore.getRun(context.params.run_id);
 
   return {

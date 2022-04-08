@@ -1,7 +1,10 @@
 import "../styles/globals.css";
 import Head from "next/head";
-import Honeybadger from '@honeybadger-io/js';
+import Honeybadger from "@honeybadger-io/js";
 import type { AppProps } from "next/app";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme();
 
 const HONEYBADGER_API_KEY = process.env.HONEYBADGER_API_KEY;
 const HONEYBADGER_ENV = process.env.HONEYBADGER_ENV;
@@ -12,7 +15,7 @@ if (HONEYBADGER_API_KEY) {
     apiKey: HONEYBADGER_API_KEY,
     environment: HONEYBADGER_ENV,
     revision: HONEYBADGER_REVISION,
-    projectRoot: 'webpack://_N_E/./',
+    projectRoot: "webpack://_N_E/./",
   });
 }
 
@@ -26,7 +29,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
       </Head>
-      <Component {...pageProps} />
+      <ThemeProvider theme={theme}>
+        <Component {...pageProps} />
+      </ThemeProvider>
     </>
   );
 }

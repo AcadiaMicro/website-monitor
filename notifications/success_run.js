@@ -10,7 +10,7 @@ module.exports = (ctx) => {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": ":success:  *Website Monitoring Report* \\n\\n *All landing page on the website are in good shape*"
+                    "text": ":success:  *Website Monitoring Report* \\n\\n *All landing pages responded successfully.*"
                 }
             },
             {
@@ -47,20 +47,10 @@ module.exports = (ctx) => {
                         "type": "button",
                         "text": {
                             "type": "plain_text",
-                            "text": "Run Scan Again",
-                            "emoji": true
-                        },
-                        "value": "scan_again",
-                        "url": "${MONITOR_URL}/api/runner"
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
                             "text": "View Scan Details",
                             "emoji": true
                         },
-                        "value": "scan_again",
+                        "value": "scan_details",
                         "url": "${MONITOR_URL}/${ctx.run_id}"
                     }
                 ]
