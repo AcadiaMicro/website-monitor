@@ -12,7 +12,7 @@ const runners = {
 };
 
 const worker = async (runId, queue, runner) => {
-  console.log("PREPS", runner);
+  console.log("PREPS", runner, process.memoryUsage());
   try {
 
     if (!queue || queue.length == 0) {
@@ -35,22 +35,22 @@ const worker = async (runId, queue, runner) => {
     let res = [];
 
     
-    for ( let item of queue) {
-      res.push(await runners[runner](item, browser))
+    // for ( let item of queue) {
+    //   res.push(await runners[runner](item, browser))
       
-    }
-
-    // for (let i = 1, len = Math.ceil(queue.length / BATCH_SIZE); i <= len; i++) {
-    //   const start = (i - 1) * BATCH_SIZE;
-    //   const end = i * BATCH_SIZE;
-    //   console.log(start, end);
-    //   let runResult = await Promise.all(
-    //     queue.slice(start, end).map((item) => {
-    //       return runners[runner](item, browser);
-    //     })
-    //   );
-    //   res = res.concat(runResult);
     // }
+
+    for (let i = 1, len = Math.ceil(queue.length / BATCH_SIZE); i <= len; i++) {
+      const start = (i - 1) * BATCH_SIZE;
+      const end = i * BATCH_SIZE;
+      console.log(start, end);
+      let runResult = await Promise.all(
+        queue.slice(start, end).map((item) => {
+          return runners[runner](item, browser);
+        })
+      );
+      res = res.concat(runResult);
+    }
 
     console.log((+new Date() - start) / 1000);
 
