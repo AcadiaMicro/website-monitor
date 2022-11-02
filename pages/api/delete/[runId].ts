@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import firestore from "../../../connector/firestore";
-import storage from  "../../../connector/storage";
 
 type Data = {
   status?: any;
@@ -16,7 +15,6 @@ export default async function handler(
     const { runId } = req.query
     console.log(runId)
     await firestore.remove(runId);
-    storage.delete(runId);
     res.status(200).json({ status: 'removed' });
   } catch (err) {
     console.log(err);

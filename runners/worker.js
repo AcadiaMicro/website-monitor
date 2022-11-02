@@ -2,19 +2,17 @@ const firestore = require("../connector/firestore");
 const browserManager = require("../connector/browser");
 const notifications = require("../notifications");
 
-const locals = require('../utils/locals');
+const locals = require("../utils/locals");
 
 const BATCH_SIZE = 5;
 
 const runners = {
   landingPageRunner: require("./landingPageRunner"),
-  landingPageRunnerHeadless: require("./landingPageRunnerHeadless"),
 };
 
 const worker = async (runId, queue, runner) => {
   console.log("PREPS", runner, process.memoryUsage());
   try {
-
     if (!queue || queue.length == 0) {
       throw new Error("QUEUE is not valid");
     }
@@ -22,9 +20,8 @@ const worker = async (runId, queue, runner) => {
       throw new Error("Runner is not valid");
     }
 
-
     let browser;
-    if (runner == 'landingPageRunnerHeadless') {
+    if (runner == "landingPageRunnerHeadless") {
       browser = await browserManager();
     }
 
@@ -68,28 +65,26 @@ const worker = async (runId, queue, runner) => {
           ? Math.round((successPagesAVGTime / succesPages.length) * 100) / 100
           : 0,
       res: res,
-    }
+    };
     await firestore.update(runId, runData);
 
     if (failedPages.length > 0) {
       await notifications("missing_landing_pages", {
         ...runData,
-        failedPagesDetailes: failedPages
+        failedPagesDetailes: failedPages,
       });
     } else {
       await notifications("success_run", runData);
-    }  
-    
+    }
+
     if (browser) {
       await browser.close();
     }
-
   } catch (err) {
-    
-    await firestore.update(runId, { 
+    await firestore.update(runId, {
       timestamp: +new Date(),
       status: locals.FAILURE,
-      error: err
+      error: err,
     });
 
     throw err;
