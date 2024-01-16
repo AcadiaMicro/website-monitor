@@ -1,12 +1,62 @@
-const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack');
-const { execSync } = require('child_process');
+const HoneybadgerSourceMapPlugin = require("@honeybadger-io/webpack");
+const { execSync } = require("child_process");
 
 const { HONEYBADGER_API_KEY, HONEYBADGER_ASSETS_URL, NODE_ENV } = process.env;
-const HONEYBADGER_REVISION = execSync('git rev-parse HEAD').toString().trim();
+const HONEYBADGER_REVISION = execSync("git rev-parse HEAD").toString().trim();
+
+const ContentSecurityPolicy = `
+  connect-src 'self' 
+  *.honeybadger.io
+  *.ampion.net
+
+  default-src 'self'; 
+
+  font-src 'self' data:; 
+
+  frame-src 'self' 
+  www.google.com; 
+
+  img-src 'self'
+  * data:; 
+
+  media-src 'self' blob:; 
+
+  style-src 'self' 'unsafe-inline'; 
+
+  script-src 
+  'self' 
+  'unsafe-eval' 
+  *.google.com
+  blob:; 
+
+  script-src-elem 'self' 'unsafe-inline'
+  
+  *.google.com
+`;
+
+const securityHeaders = [
+  {
+    key: "X-Frame-Options",
+    value: "DENY",
+  },
+  {
+    key: "Content-Security-Policy",
+    value: ContentSecurityPolicy.replace(/\s{2,}/g, " ").trim(),
+  },
+];
 
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        // Apply these headers to all routes
+        source: "/:path*",
+        headers: securityHeaders,
+      },
+    ];
+  },
   env: {
     DATOCMS_API_TOKEN: process.env.DATOCMS_API_TOKEN,
     DATOCMS_API_URL: process.env.DATOCMS_API_URL,
@@ -23,32 +73,32 @@ module.exports = {
     HONEYBADGER_REVISION: HONEYBADGER_REVISION,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_AUTH_REDIRECT_URL: process.env.GOOGLE_AUTH_REDIRECT_URL,
-    API_ACCESS_KEY: process.env.API_ACCESS_KEY
+    API_ACCESS_KEY: process.env.API_ACCESS_KEY,
   },
   webpack: (config) => {
     if (
       HONEYBADGER_API_KEY &&
       HONEYBADGER_ASSETS_URL &&
-      NODE_ENV === 'production'
+      NODE_ENV === "production"
     ) {
-      config.devtool = 'hidden-source-map';
+      config.devtool = "hidden-source-map";
 
       config.plugins.push(
         new HoneybadgerSourceMapPlugin({
           apiKey: HONEYBADGER_API_KEY,
           assetsUrl: HONEYBADGER_ASSETS_URL,
           revision: HONEYBADGER_REVISION,
-        }),
+        })
       );
     }
 
     config.module.rules = config.module.rules.concat([
       {
         test: /\.md$/,
-        loader: 'raw-loader',
+        loader: "raw-loader",
       },
     ]);
 
     return config;
   },
-}
+};
