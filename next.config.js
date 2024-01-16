@@ -7,21 +7,23 @@ const HONEYBADGER_REVISION = execSync("git rev-parse HEAD").toString().trim();
 const ContentSecurityPolicy = `
   connect-src 'self' 
   *.honeybadger.io
-  *.ampion.net
+  *.ampion.net;
 
   default-src 'self'; 
 
-  font-src 'self' data:; 
+  font-src 'self' 
+  *.gstatic.com
+  data:; 
 
   frame-src 'self' 
-  www.google.com; 
+  *.google.com; 
 
   img-src 'self'
   * data:; 
 
   media-src 'self' blob:; 
 
-  style-src 'self' 'unsafe-inline'; 
+  style-src 'self' 'unsafe-inline' *.google.com; 
 
   script-src 
   'self' 
@@ -29,9 +31,9 @@ const ContentSecurityPolicy = `
   *.google.com
   blob:; 
 
-  script-src-elem 'self' 'unsafe-inline'
-  
-  *.google.com
+  script-src-elem 
+  'self' 'unsafe-inline'
+  *.google.com;
 `;
 
 const securityHeaders = [
