@@ -34,13 +34,11 @@ const ContentSecurityPolicy = `
   script-src-elem 
   'self' 'unsafe-inline'
   *.google.com;
+
+  frame-ancestors 'none'; 
 `;
 
 const securityHeaders = [
-  {
-    key: "X-Frame-Options",
-    value: "DENY",
-  },
   {
     key: "Content-Security-Policy",
     value: ContentSecurityPolicy.replace(/\s{2,}/g, " ").trim(),
